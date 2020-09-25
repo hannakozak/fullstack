@@ -6,16 +6,24 @@ const Statistics = ({good, neutral, bad}) => {
   const average = (good*1 + bad*(-1))/total
   const persentage = (good/total)*100
   
+  if (total!==0) {
   return (
-  <div>
-    <h1>statistics</h1>
-	<div>good {good}</div>
-	<div>neutral {neutral}</div>
-	<div> bad {bad}</div>
-    <div> all {total}</div>
-    <div> average {average}</div>
-    <div> positive {persentage} %</div>
-  </div>
+    <div>
+      <h1>statistics</h1>
+	  <div>good {good}</div>
+	  <div>neutral {neutral}</div>
+	  <div> bad {bad}</div>
+      <div> all {total}</div>
+      <div> average {average}</div>
+      <div> positive {persentage} %</div>
+    </div>
+  )
+  }
+  return (
+    <div>
+      <h1>statistics</h1>
+      <div>No feedeback given</div>
+      </div>
   )
 }
 
