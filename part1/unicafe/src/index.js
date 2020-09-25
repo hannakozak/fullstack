@@ -2,9 +2,9 @@ import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
 
 const Statistic = ({ text, value }) => (
-	<div>
-	{text} {value}
-	</div>
+  <tr>
+	<td>{text}</td><td>{value}</td>
+  </tr>
 )
 
 const Button = ({ onClick, text }) => (
@@ -20,16 +20,17 @@ const Statistics = ({ good, neutral, bad }) => {
   
   if (total!==0) {
   return (
-    <div>
-      <h1>statistics</h1>
+    <table>
+      <thead><tr><td><h1>statistics</h1></td></tr></thead>
+	  <tbody>
 	  <Statistic text="good" value ={good} />
       <Statistic text="neutral" value ={neutral} />
       <Statistic text="bad" value ={bad} />
 	  <Statistic text="all" value ={total} />
 	  <Statistic text="average" value ={average} />
 	  <Statistic text="positive" value ={persentage} />
-	  
-    </div>
+	  </tbody>
+    </table>
   )
   }
   return (
