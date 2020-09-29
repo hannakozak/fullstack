@@ -1,33 +1,33 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React from 'react'
+import ReactDOM from 'react-dom'
 
 const Course = ({ course }) => {
   return (
-  <div>
-    <Header  course={course}/>
-	<Content course={course} />
-	<Total course={course} />
-  </div>
+    <div>
+     <Header  course={ course }/>
+	 <Content course={ course } />
+	 <Total course={ course } />
+    </div>
   )
 }
 
 const Header = ({ course }) => {
   return (
-    <h1>{course.name}</h1>
+    <h2>{ course.name }</h2>
   )
 }
 
 const Total = ({ course }) => {
   const total = course.parts.reduce((a,c) => a+c.exercises, 0)
   return(
-    <p>Total of {total} exercises</p>
+    <p>Total of { total } exercises</p>
   ) 
 }
 
 const Part = (props) => {
   return (
     <p>
-      {props.part.name} {props.part.exercises}
+      { props.name } { props.exercises }
     </p>    
   )
 }
@@ -35,16 +35,18 @@ const Part = (props) => {
 const Content = ({ course }) => {
   return (
     <div>
-      <Part part={course.parts[0]} />
-      <Part part={course.parts[1]} />
-      <Part part={course.parts[2]} />
-	  <Part part={course.parts[3]} />
+	{ 
+	  course.parts.map((part) => 
+	    <Part key={ part.id } name={ part.name } exercise={ part.exercise } />
+	  )
+	}
     </div>
   )
 }
 
 const App = () => {
-  const course = {
+  const courses = [
+  {
     id: 1,
     name: 'Half Stack application development',
     parts: [
@@ -69,9 +71,35 @@ const App = () => {
         id: 4
       }
     ]
-  }
+  },
+  {
+      name: 'Node.js',
+      id: 2,
+      parts: [
+        {
+          name: 'Routing',
+          exercises: 3,
+          id: 1
+        },
+        {
+          name: 'Middlewares',
+          exercises: 7,
+          id: 2
+        }
+      ]
+    }
+  ]
 
-  return <Course course={course} />
+  return (
+    <div>
+	  <h1> Web development curriculum</h1>
+       {
+	      courses.map(course => 
+	        <Course key = { course.id } course={ course } />
+		  )
+	   }
+    </div>
+  )
 }
 
 ReactDOM.render(<App />, document.getElementById('root'))
