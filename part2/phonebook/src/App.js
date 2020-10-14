@@ -31,12 +31,18 @@ const App = () => {
 		date: new Date().toISOString(),
         id: persons.length+1
 	  }
-	  
-	  persons.some(person => person.name === newName) ? 
-		window.alert(`${newName} is already added to phonebook`) :
-		setPersons(persons.concat(personObject))
+	 
+persons.some(person => person.name === newName) ? 
+		window.alert(`${newName} is already added to phonebook`) :	 
+	   axios
+    .post('http://localhost:3001/persons', personObject)
+    .then(response => {
+      setPersons(persons.concat(response.data))
       setNewName('')
-	  setNewNumber('')
+    })
+	  
+	  
+	
   }
   
   const handleNameChange = (event) => {
