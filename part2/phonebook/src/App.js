@@ -25,8 +25,6 @@ const App = () => {
 	  const personObject = {
 		name: newName,
 		number: newNumber,
-		date: new Date().toISOString(),
-        id: persons.length+1
 	  }
 	 
       persons.some(person => person.name === newName) ? 
@@ -36,6 +34,7 @@ const App = () => {
           .then(returnedPersons => {
             setPersons(persons.concat(returnedPersons))
             setNewName('')
+			setNewNumber('')
        })
   }
   
@@ -59,6 +58,16 @@ const App = () => {
     setSearchResults(results)
   }
   
+  const handleDelete = (id, name) => {
+	if(window.confirm(`Delete ${name}?`)){
+	  personsService
+	  .remove(id)
+	  .then(() =>  {
+      setPersons(persons.filter(n => n.id !== id) )}
+	  )
+	}
+  }
+  
   return (
     <div>
       <h2>Phonebook</h2>
@@ -68,7 +77,7 @@ const App = () => {
 	  <PersonForm addPerson={ addPerson } newName={ newName } newNumber={ newNumber } handleNameChange={ handleNameChange } handleNumberChange={ handleNumberChange }/>
       
       <h2>Numbers</h2>
-	  <Persons persons={ persons } />
+	  <Persons persons={ persons } handleDelete={ handleDelete } />
     </div>
   )
 }
