@@ -4,6 +4,7 @@ import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
 import personsService from './services/persons'
 import Notification from './components/Notification'
+import Error from './components/Error'
 
 
 const App = () => {
@@ -13,6 +14,7 @@ const App = () => {
   const [ searchTerm, setSearchTerm ] = useState('')
   const [ searchResults, setSearchResults ] = useState([])
   const [ addMessage, setAddMessage ] = useState(null)
+  const [ error, setError ] = useState(null)
   
   useEffect(() => {
     personsService
@@ -40,12 +42,24 @@ const App = () => {
                 person.id !== changedPerson.id
                 ? person
 		        : returnedPersons))})
+				.catch(error => {
+              setError('error')
+			  setAddMessage(null)
+              setError(
+                `Information of ${newName} has already been removed from server.`
+                )
+              
+              setTimeout(() => {
+                setError(null)
+              }, 5000)
+            })
 			setAddMessage(`${newName}s number was sucessfully changed`)
 			setTimeout(() => {
             setAddMessage(null)
           }, 5000)
             setNewName('')
 			setNewNumber('')
+			
 	}
 	 
       else 	  
@@ -99,6 +113,7 @@ const App = () => {
     <div>
       <h2>Phonebook</h2>
 	  <Notification message={addMessage} />
+	  <Error error={error} />
 	  <Filter searchTerm={ searchTerm } handleSearch={ handleSearch } searchResults={ searchResults } />
 	  
 	  <h2>add a new </h2>
