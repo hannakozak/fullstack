@@ -4,22 +4,16 @@ const morgan = require('morgan')
 
 app.use(express.json())
 
+morgan.token('postbody', function(request) {
+  return JSON.stringify(request.body);
+});
 
 app.use(
   morgan(
-  ':method :url :status :res[content-length] - :response-time ms'
+  ':method :url :status :res[content-length] - :response-time ms :postbody'
   )
 );
 
-morgan(function (tokens, req, res) {
-  return [
-    tokens.method(req, res),
-    tokens.url(req, res),
-    tokens.status(req, res),
-    tokens.res(req, res, 'content-length'), '-',
-    tokens['response-time'](req, res), 'ms'
-  ].join(' ')
-})
 
 let persons = [
     {
@@ -71,8 +65,7 @@ app.delete('/api/persons/:id', (request, response) => {
 })
 
 const generateId = () => {
-  const max = persons.length 
-   return Math.floor(Math.random() * Math.floor(max) + 1)
+   return Math.floor(Math.random() * persons.length) + persons.length
 }
 
 app.post('/api/persons', (request, response) => {
