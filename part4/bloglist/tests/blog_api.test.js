@@ -12,7 +12,11 @@ describe("retriving posts", () => {
       .expect("Content-Type", /application\/json/);
   })
   
+  test('there are seven blog posts', async () => {
+  const response = await api.get('/api/blogs')
 
+  expect(response.body).toHaveLength(7)
+})
 })
 
 afterAll(() => {
