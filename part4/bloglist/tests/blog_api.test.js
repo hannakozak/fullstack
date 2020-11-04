@@ -19,6 +19,13 @@ describe("retriving posts", () => {
 })
 })
 
+describe("verifing the unique identifier property", () => {
+  test("id exist", async () => {
+	const response = await api.get('/api/blogs')
+    response.body.forEach(blog => expect(blog.id).toBeDefined())
+})
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
