@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
+const helper = require('./test_helper')
 
 const api = supertest(app)
 
@@ -12,17 +13,39 @@ describe("retriving posts", () => {
       .expect("Content-Type", /application\/json/);
   })
   
-  test('there are seven blog posts', async () => {
-  const response = await api.get('/api/blogs')
-
-  expect(response.body).toHaveLength(7)
-})
+ 
 })
 
 describe("verifing the unique identifier property", () => {
   test("id exist", async () => {
 	const response = await api.get('/api/blogs')
     response.body.forEach(blog => expect(blog.id).toBeDefined())
+})
+})
+
+describe("adding the new blog", () => {
+test('a valid blog post can be added', async () => {
+  const newBlog = {
+    title: 'Css is Tricky',
+	author: 'HK',
+    url: 'http://localhost:3003/api/blogs/9',
+    likes: 5
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const response = await api.get('/api/blogs')
+
+  const contents = response.body.map(r => r.title)
+
+  expect(response.body).toHaveLength(helper.initialBlogs.length + 1)
+  expect(contents).toContain(
+    'Css is Tricky'
+  )
 })
 })
 
