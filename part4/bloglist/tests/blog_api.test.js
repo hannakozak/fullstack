@@ -5,7 +5,9 @@ const helper = require('./test_helper')
 
 const api = supertest(app)
 
-describe("retriving posts", () => {
+
+
+describe("blog api test", () => {
   test("blogs are returned as json", async () => {
     await api
       .get("/api/blogs")
@@ -13,17 +15,17 @@ describe("retriving posts", () => {
       .expect("Content-Type", /application\/json/);
   })
   
- 
+  test('all blog post are returned', async () => {
+  const response = await api.get('/api/blogs')
+
+  expect(response.body).toHaveLength(helper.initialBlogs.length)
 })
 
-describe("verifing the unique identifier property", () => {
-  test("id exist", async () => {
+ test("verifing the unique identifier property", async () => {
 	const response = await api.get('/api/blogs')
     response.body.forEach(blog => expect(blog.id).toBeDefined())
 })
-})
 
-describe("adding the new blog", () => {
 test('a valid blog post can be added', async () => {
   const newBlog = {
     title: 'Css is Tricky',
@@ -48,6 +50,9 @@ test('a valid blog post can be added', async () => {
   )
 })
 })
+
+
+
 
 afterAll(() => {
   mongoose.connection.close()
