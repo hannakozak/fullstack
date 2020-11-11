@@ -175,6 +175,66 @@ describe('addition of a new blog post', () => {
     const usersAtEnd = await helper.usersInDb()
     expect(usersAtEnd).toHaveLength(usersAtStart.length)
   })
+  
+  test('creation fails when username is not given', async () => {
+    const usersAtStart = await helper.usersInDb()
+	
+	const newUser = {
+	  name: 'Lala',
+	  password: 'lalamal',
+	}
+	
+	const result = await api
+	  .post('/api/users')
+	  .send(newUser)
+	  .expect(400)
+	  .expect('Content-Type', /application\/json/)
+	  
+	expect(result.body.error).toContain(' Path `username` is required.')
+	const usersAtEnd = await helper.usersInDb()
+    expect(usersAtEnd).toHaveLength(usersAtStart.length)
+  })
+  
+  
+  test('username length is greater than 3 characters', async () => {
+    const usersAtStart = await helper.usersInDb();
+
+    const newUser = {
+      username: 'Ko',
+	  name: 'Kola Mola',
+      password: 'koloknhb',
+    }
+            
+    const result = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+	  .expect('Content-Type', /application\/json/)
+
+    expect(result.body.error).toContain('`username` (`Ko`) is shorter than the minimum allowed ')  
+  })
+  
+  test('password length is greater than 3 characters', async () => {
+    const usersAtStart = await helper.usersInDb();
+
+    const newUser = {
+      username: 'Kolama',
+	  name: 'Kola Mola',
+      password: 'ko',
+    }
+            
+    const result = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+	  .expect('Content-Type', /application\/json/)
+
+    expect(result.body.error).toContain('password length must be greater than 3 characters')  
+  })
+	
+	
+
+
 })
 
 afterAll(() => {
