@@ -4,13 +4,13 @@ const User = require('../models/user')
 const initialBlogs = [
   {
     title: 'HTML is easy',
-	author: 'HK',
+	author: 'Hanna',
     url: 'http://localhost:3003/api/blogs/1',
     likes: 34
   },
   {
     title: 'Browser can execute only Javascript',
-    author: 'HK',
+    author: 'Hanna',
     url: 'http://localhost:3003/api/blogs/2',
 	likes: 3
   }
