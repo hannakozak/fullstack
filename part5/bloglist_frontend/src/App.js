@@ -16,14 +16,30 @@ const App = () => {
       setBlogs( blogs )
     )  
   }, [])
-
+    
+  const handleLogout = async (event) => {
+    event.preventDefault()
+    try {
+      window.localStorage.removeItem('loggedBlogAppUser')
+      setUser(null)
+    } catch (exception) {
+      setErrorMessage('Logout unsuccessful')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 3000)
+    }
+  }
+  
+  
   const handleLogin = async (event) => {
     event.preventDefault()
-    
     try {
       const user = await loginService.login({
         username, password,
       })
+      window.localStorage.setItem(
+        'loggedBlogappUser', JSON.stringify(user)
+      ) 
       setUser(user)
       setUsername('')
       setPassword('')
@@ -35,12 +51,8 @@ const App = () => {
     }
   }
 
-
-  if (user === null) {
-    return (
-      <div>
-        <h2>Log in to application</h2>
-        <form onSubmit={handleLogin}>
+  const loginForm = () => (
+    <form onSubmit={handleLogin}>
         <div>
         username
           <input
@@ -60,18 +72,25 @@ const App = () => {
         />
       </div>
       <button type="submit">login</button>
-        </form>
-      </div>
-    )
-  }
+      </form>
+  )
 
-  return (
+  const BlogForm = () => (
     <div>
-      <h2>blogs</h2>
       <h2> {user.name} is logged in</h2>
+      <button onClick={handleLogout}>
+         log out
+      </button>
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}
+    </div>
+  )
+  return (
+    <div>
+      <h2>blogs</h2>
+      {user === null && loginForm()}
+      {user !== null && BlogForm()}
     </div>
   )
 }
