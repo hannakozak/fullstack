@@ -13,7 +13,7 @@ const App = () => {
   const [password, setPassword] = useState('')
   const [likes, setLikes] = useState(0)
   const [user, setUser] = useState(null)
-  const [errorMessage, setErrorMessage] = useState(null)
+  const [notify, setNotify] = useState(null)
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -45,35 +45,31 @@ const App = () => {
     setLikes(event.target.value)
   }
 
-  const createBlog = async (event) => {
+  const handlecreateBlog = async (event) => {
     event.preventDefault()
     try{
       const response = await blogService.createBlog({title, author, url, likes })
       setBlogs(blogs.concat(response))
+      setNotify({message: `a new blog ${response.title} by ${response.author} added`, type: "success"})
+      setTimeout(() => {
+        setNotify(null)
+      },5000)
       setTitle("")
       setLikes("")
       setAuthor("")
       setUrl("")
     }
-    catch (exception) {
-      setErrorMessage('Error')
+    catch(exception){
+      setNotify({message: exception.response.data.error, type:"error"})
       setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
+        setNotify(null)
+      },5000)
     }
   }
 
   const handleLogout = async (event) => {
-    event.preventDefault()
-    try {
-      window.localStorage.removeItem('loggedBlogAppUser')
+    window.localStorage.removeItem("loggedBlogUser")
       setUser(null)
-    } catch (exception) {
-      setErrorMessage('Logout unsuccessful')
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 3000)
-    }
   }
   
   const handleLogin = async (event) => {
@@ -89,11 +85,11 @@ const App = () => {
       blogService.setToken(user.token)
       setUsername('')
       setPassword('')
-    } catch (exception) {
-      setErrorMessage('Wrong credentials')
+    } catch(exception){
+      setNotify({message: exception.response.data.error, type:"error"})
       setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
+        setNotify(null)
+      },5000)
     }
   }
 
@@ -128,7 +124,7 @@ const App = () => {
          log out
       </button>
       <h2>Create new blog post</h2>
-      <form onSubmit={createBlog}>
+      <form onSubmit={handlecreateBlog}>
       <div>Title:<input value={title} onChange={handleTitleChange}/></div>
       <div>Author:<input value={author} onChange={handleAuthorChange}/></div>
       <div>Url:<input value={url} onChange={handleUrlChange}/></div>
@@ -143,6 +139,7 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
+      {notify !== null && <Notification notify={notify}/>}
       {user === null && loginForm()}
       {user !== null && BlogForm()}
     </div>
