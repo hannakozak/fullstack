@@ -1,8 +1,25 @@
-import React from 'react'
+import React,  {useState} from 'react'
 
-const BlogForm = ({ user,  handlecreateBlog, 
-    handleTitleChange, title, author, handleAuthorChange, url, handleUrlChange,
-    likes, handleLikesChange }) => {
+const BlogForm = ({ handlecreateBlog }) => {
+  const [title, setTitle] = useState([''])
+  const [author, setAuthor] = useState([''])
+  const [url, setUrl] = useState([''])
+  const [likes, setLikes] = useState(0)
+
+  const handleTitleChange = (event) => {
+    setTitle(event.target.value)
+  }
+
+  const handleAuthorChange = (event) => {
+    setAuthor(event.target.value)
+  }
+
+  const handleUrlChange = (event) => {
+    setUrl(event.target.value)
+  }
+  const handleLikesChange = (event) => {
+    setLikes(event.target.value)
+  }
      return (
        <div>
          <h2>Create new blog post</h2>

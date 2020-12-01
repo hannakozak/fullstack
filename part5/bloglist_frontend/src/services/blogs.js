@@ -12,18 +12,13 @@ const getAll = async () => {
   return request.data
 }
 
-const login = async (credentials) => {
-  const request = await axios.post("/api/login",credentials)
-  return request.data
-}
-
-const createBlog = async (blog) => {
-  const header = {
-    headers: {Authorization: token}
+const create = async newObject => {
+  const config = {
+    headers: { Authorization: token },
   }
 
-  const response = await axios.post(baseUrl, blog, header)
+  const response = await axios.post(baseUrl, newObject, config)
   return response.data
 }
 
-export default { getAll, login, setToken, createBlog  }
+export default { getAll, setToken, create  }
