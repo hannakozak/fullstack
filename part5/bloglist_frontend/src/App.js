@@ -29,18 +29,17 @@ const App = () => {
         }
     },[])
 
-    const handlecreateBlog = async (blogObject) => {
+    const addBlog = async (blogObject) => {
         try{
             blogFormRef.current.toggleVisibility()
-            const response = await blogService.create({ blogObject })
-            setBlogs(blogs.concat(response))
+            const response = await blogService.create( blogObject )
+            const updatedBlogs = await blogService.getAll()
+            setBlogs(blogs.concat(updatedBlogs))
             setNotify({ message: `a new blog ${response.title} by ${response.author} added`, type: 'success' })
             setTimeout(() => {
                 setNotify(null)
             },5000)
-
-        }
-        catch(exception){
+        } catch(exception){
             setNotify({ message: exception.response.data.error, type:'error' })
             setTimeout(() => {
                 setNotify(null)
@@ -48,8 +47,7 @@ const App = () => {
         }
     }
 
-
-    const handleLogout = async (event) => {
+    function handleLogout(event) {
         window.localStorage.removeItem('loggedBlogUser')
         setUser(null)
     }
@@ -92,7 +90,7 @@ const App = () => {
     const blogForm = () => (
         <Togglable buttonLabel='new blog' ref={blogFormRef}>
             <BlogForm
-                handleCreateBlog = {handlecreateBlog}
+                createBlog = {addBlog}
             />
         </Togglable>
     )

@@ -1,6 +1,6 @@
 import React,  { useState } from 'react'
 
-const BlogForm = ({ handlecreateBlog }) => {
+const BlogForm = ({ createBlog }) => {
     const [title, setTitle] = useState([''])
     const [author, setAuthor] = useState([''])
     const [url, setUrl] = useState([''])
@@ -19,6 +19,14 @@ const BlogForm = ({ handlecreateBlog }) => {
     }
     const handleLikesChange = (event) => {
         setLikes(event.target.value)
+    }
+
+    const handlecreateBlog = async (event) => {
+        event.preventDefault()
+        createBlog({ title, author, url, likes })
+        setTitle('')
+        setAuthor('')
+        setUrl('')
     }
     return (
         <div>
