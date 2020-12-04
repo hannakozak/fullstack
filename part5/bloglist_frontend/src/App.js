@@ -52,7 +52,7 @@ const App = () => {
             const foundBlog = blogs.find(b => b.id === id)
             const updatedBlog = { ...foundBlog, likes: foundBlog.likes + 1 }
             const response = await blogService.update(id, updatedBlog)
-            setBlogs(blogs.map(b => b.id !== id ? b : response))
+            setBlogs(blogs.map(b => b.id !== id ? b : response).sort((a, b) => b.likes - a.likes))
         } catch(exception){
             setNotify({ message: exception.response.data.error, type:'error' })
             setTimeout(() => {
