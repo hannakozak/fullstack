@@ -47,6 +47,20 @@ const App = () => {
         }
     }
 
+    const likeBlog = async (id) => {
+        try {
+            const foundBlog = blogs.find(b => b.id === id)
+            const updatedBlog = { ...foundBlog, likes: foundBlog.likes + 1 }
+            const response = await blogService.update(id, updatedBlog)
+            setBlogs(blogs.map(b => b.id !== id ? b : response))
+        } catch(exception){
+            setNotify({ message: exception.response.data.error, type:'error' })
+            setTimeout(() => {
+                setNotify(null)
+            },5000)
+        }
+    }
+
     function handleLogout(event) {
         window.localStorage.removeItem('loggedBlogUser')
         setUser(null)
@@ -95,6 +109,7 @@ const App = () => {
         </Togglable>
     )
 
+
     return (
         <div>
             <h2>Blogs</h2>
@@ -110,7 +125,7 @@ const App = () => {
 
             <div>
                 {blogs.map(blog =>
-                    <Blog key={blog.id} blog={blog} />
+                    <Blog key={blog.id} blog={blog} handleLikeBlog={likeBlog} />
                 )}
             </div>
         </div>

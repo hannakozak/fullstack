@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, handleLikeBlog }) => {
     const [showFullBlog, setShowFullBlog] = useState(false)
 
     const showBlog = { display: showFullBlog ? '' : 'none' }
@@ -30,7 +30,7 @@ const Blog = ({ blog }) => {
                 <div> {blog.url}</div>
                 <div>
                     {blog.likes}
-                    <button>like</button>
+                    <button onClick={(event) => handleLikeBlog(blog.id)}>like</button>
                 </div>
             </div>
         </div>
