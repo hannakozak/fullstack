@@ -129,6 +129,7 @@ const App = () => {
     return (
         <div>
             <h2>Blogs</h2>
+            <h2>Login to application</h2>
             {notify !== null && <Notification notify={notify}/>}
 
             {user === null ? loginForm() :
