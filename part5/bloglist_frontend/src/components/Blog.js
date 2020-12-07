@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-const Blog = ({ blog, handleLikeBlog }) => {
+const Blog = ({ blog, handleLikeBlog, handleDelete }) => {
     const [showFullBlog, setShowFullBlog] = useState(false)
 
     const showBlog = { display: showFullBlog ? '' : 'none' }
@@ -32,6 +32,7 @@ const Blog = ({ blog, handleLikeBlog }) => {
                     {blog.likes}
                     <button onClick={(event) => handleLikeBlog(blog.id)}>like</button>
                 </div>
+                <button onClick={(event) => handleDelete(blog)}>remove</button>
             </div>
         </div>
 
