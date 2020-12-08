@@ -24,6 +24,11 @@ describe('Blog app', function() {
       cy.contains('Login to application')
     })
 
+    it('User can like blog post', function() {
+      cy.contains('show').click()
+      cy.contains('like').click()
+    })
+
     describe('Login',function() {
       it('succeeds with correct credentials', function() {
         cy.contains('login').click()
