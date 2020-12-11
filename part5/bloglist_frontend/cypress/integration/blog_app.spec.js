@@ -61,9 +61,7 @@ describe('Blog app', function() {
         cy.get('#author').type('a author created by cypress')
         cy.get('#url').type('a url created by cypress')
         cy.contains('create').click()
-  
         cy.contains('a title created by cypress')
-        
       })
     })
 })

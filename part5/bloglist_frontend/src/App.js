@@ -142,7 +142,7 @@ const App = () => {
 
             <div>
                 {blogs.map(blog =>
-                    <Blog key={blog.id} blog={blog} handleLikeBlog={likeBlog} handleDelete={handleDelete}/>
+                    <Blog key={blog.id} blog={blog} handleLikeBlog={likeBlog} handleDelete={handleDelete} user={user}/>
                 )}
             </div>
         </div>
