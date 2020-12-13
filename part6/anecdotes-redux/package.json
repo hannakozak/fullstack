@@ -1,5 +1,5 @@
 {
-  "name": "unicafe-redux",
+  "name": "anecdotes-redux",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -36,8 +36,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "deep-freeze": "0.0.1"
   }
 }
