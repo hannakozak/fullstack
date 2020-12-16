@@ -1,5 +1,5 @@
 {
-  "anecdotes":[
+  "anecdotes": [
     {
       "content": "If it hurts, do it more often",
       "id": "47145",
@@ -28,6 +28,30 @@
     {
       "content": "Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.",
       "id": "98312",
+      "votes": 0
+    },
+    {
+      "content": "Love For All, Hatred For None",
+      "id": "4103",
+      "votes": 0
+    },
+    {
+      "content": "Every moment is a fresh beginning",
+      "id": "18053",
+      "votes": 0
+    },
+    {
+      "content": "Every moment is a fresh beginning",
+      "id": "0QRa9xL"
+    },
+    {
+      "content": "Change the world by being yourself",
+      "id": "71843",
+      "votes": 0
+    },
+    {
+      "content": "Little Frog",
+      "id": "6329",
       "votes": 0
     }
   ]
