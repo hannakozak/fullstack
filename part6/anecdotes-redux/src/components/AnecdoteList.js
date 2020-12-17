@@ -19,8 +19,8 @@ else
   })
 
   const vote = (id) => {
-    dispatch(voteAnecdote(id))
     const votedAnecdote = anecdotes.find((anecdote) => anecdote.id === id)
+    dispatch(voteAnecdote(votedAnecdote))
     dispatch(
       setNotificationMessage({ message: `You voted ${votedAnecdote.content}` })
     )

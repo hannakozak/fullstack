@@ -37,10 +37,13 @@ export const initializeAnecdotes = () => {
   }
 }
 
-export const voteAnecdote = (id) => {
-  return {
+export const voteAnecdote = (anecdote) => {
+  return async dispatch => {
+  const votes = await anecdotesService.update(anecdote)
+  dispatch({
     type: 'VOTE_ANECTODE',
-    id,
+    data: votes,
+  })
   }
 }
 
