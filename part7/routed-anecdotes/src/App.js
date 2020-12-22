@@ -1,8 +1,24 @@
 import React, { useState } from 'react'
-import { Switch, useRouteMatch, Route, Link } from "react-router-dom"
+import { Switch, useRouteMatch, Route, Link, useHistory } from "react-router-dom"
 
-const AnecdoteList = ({ anecdotes }) => (
+const Notification = ({ notification }) => {
+  const style = {
+    border: 'solid',
+    padding: 10,
+    borderWidth: 1
+  }
+  return (
+    <div>
+       {notification !== "" && (
+        <div style={style}>{notification}</div>
+      )}
+    </div>
+  )
+}
+
+const AnecdoteList = ({ anecdotes, notification }) => (
   <div>
+    <Notification notification={notification}/>
     <h2>Anecdotes</h2>
     <ul>
       {anecdotes.map(anecdote => <li key={anecdote.id} >
@@ -48,6 +64,7 @@ const CreateNew = (props) => {
   const [author, setAuthor] = useState('')
   const [info, setInfo] = useState('')
 
+  const history = useHistory();
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -57,7 +74,10 @@ const CreateNew = (props) => {
       info,
       votes: 0
     })
+    history.push("/");
   }
+
+  
 
   return (
     <div>
@@ -105,6 +125,10 @@ const App = () => {
   const addNew = (anecdote) => {
     anecdote.id = (Math.random() * 10000).toFixed(0)
     setAnecdotes(anecdotes.concat(anecdote))
+    setNotification(`New anecdote ${anecdote.content} created!`);
+    setTimeout(() => {
+      setNotification("");
+    }, 10000);
   }
 
   const anecdoteById = (id) =>
@@ -145,7 +169,7 @@ const App = () => {
           <Anecdote  anecdote={anecdote}/>
         </Route>
         <Route path="/anecdotes">
-          <AnecdoteList  anecdotes={anecdotes}/>
+          <AnecdoteList  anecdotes={anecdotes} notification={notification}/>
         </Route>
         <Route path="/create">
           <CreateNew addNew={addNew}/>
@@ -154,7 +178,7 @@ const App = () => {
           <About />
         </Route>
         <Route path="/">
-          <AnecdoteList anecdotes={anecdotes}/>
+          <AnecdoteList notification={notification} anecdotes={anecdotes}/>
         </Route>
       </Switch>
       <Footer />
