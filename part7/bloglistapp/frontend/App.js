@@ -55,7 +55,7 @@ const App = () => {
       .create(blog)
       .then((createdBlog) => {
         notify(
-          `a new blog '${createdBlog.title}' by ${createdBlog.author} added`
+          `a new blog '${createdBlog.title}' by ${createdBlog.author} added`,
         );
         setBlogs(blogs.concat(createdBlog));
         blogFormRef.current.toggleVisibility();
@@ -69,7 +69,7 @@ const App = () => {
     const toRemove = blogs.find((b) => b.id === id);
 
     const ok = window.confirm(
-      `remove '${toRemove.title}' by ${toRemove.author}?`
+      `remove '${toRemove.title}' by ${toRemove.author}?`,
     );
 
     if (!ok) {

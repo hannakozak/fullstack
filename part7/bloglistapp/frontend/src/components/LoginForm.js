@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { login } from "../services/login";
 
 const LoginForm = ({ onLogin }) => {
   const [username, setUsername] = useState("");
