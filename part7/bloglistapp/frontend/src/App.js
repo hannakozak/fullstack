@@ -10,10 +10,19 @@ import blogService from "./services/blogs";
 import loginService from "./services/login";
 import userService from "./services/user";
 
+import { useDispatch } from "react-redux";
+import {
+  addNotification,
+  removeNotification,
+} from "./features/notificationSlice";
+import { v4 as uuidv4 } from "uuid";
+
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
-  const [notification, setNotification] = useState(null);
+
+  const dispatch = useDispatch();
+
   const blogFormRef = useRef();
   const byLikes = (b1, b2) => (b2.likes > b1.likes ? 1 : -1);
 
@@ -55,7 +64,7 @@ const App = () => {
       .create(blog)
       .then((createdBlog) => {
         notify(
-          `a new blog '${createdBlog.title}' by ${createdBlog.author} added`
+          `a new blog '${createdBlog.title}' by ${createdBlog.author} added`,
         );
         setBlogs(blogs.concat(createdBlog));
         blogFormRef.current.toggleVisibility();
@@ -69,7 +78,7 @@ const App = () => {
     const toRemove = blogs.find((b) => b.id === id);
 
     const ok = window.confirm(
-      `remove '${toRemove.title}' by ${toRemove.author}?`
+      `remove '${toRemove.title}' by ${toRemove.author}?`,
     );
 
     if (!ok) {
@@ -100,16 +109,15 @@ const App = () => {
   };
 
   const notify = (message, type = "info") => {
-    setNotification({ message, type });
-    setTimeout(() => {
-      setNotification(null);
-    }, 5000);
+    const id = uuidv4();
+    dispatch(addNotification({ message, type, id }));
+    setTimeout(() => dispatch(removeNotification(id)), 3000);
   };
 
   if (user === null) {
     return (
       <>
-        <Notification notification={notification} />
+        <Notification />
         <LoginForm onLogin={login} />
       </>
     );
@@ -119,7 +127,7 @@ const App = () => {
     <div>
       <h2>blogs</h2>
 
-      <Notification notification={notification} />
+      <Notification />
 
       <div>
         {user.name} logged in

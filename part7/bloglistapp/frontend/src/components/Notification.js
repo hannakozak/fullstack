@@ -1,10 +1,9 @@
-const Notification = ({ notification }) => {
-  if (notification === null) {
-    return null;
-  }
+import { useSelector } from "react-redux";
+
+const Notification = () => {
+  const notification = useSelector((state) => state.notification);
 
   const style = {
-    color: notification.type === "alert" ? "red" : "green",
     background: "lightgrey",
     fontSize: 20,
     borderStyle: "solid",
@@ -14,9 +13,18 @@ const Notification = ({ notification }) => {
   };
 
   return (
-    <div id="notification" style={style}>
-      {notification.message}
-    </div>
+    <>
+      {notification.map((notification) => (
+        <div
+          key="notification.id"
+          id="notification"
+          style={style}
+          className={notification.type}
+        >
+          {notification.message}
+        </div>
+      ))}
+    </>
   );
 };
 
