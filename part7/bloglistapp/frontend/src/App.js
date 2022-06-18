@@ -10,11 +10,13 @@ import blogService from "./services/blogs";
 import loginService from "./services/login";
 import userService from "./services/user";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   addNotification,
   removeNotification,
 } from "./features/notificationSlice";
+import { getPosts, postsSelector } from "./features/postsSlice";
+
 import { v4 as uuidv4 } from "uuid";
 
 const App = () => {
@@ -22,6 +24,11 @@ const App = () => {
   const [user, setUser] = useState(null);
 
   const dispatch = useDispatch();
+  const { posts, loading, isError } = useSelector(postsSelector);
+
+  useEffect(() => {
+    dispatch(getPosts());
+  }, [dispatch]);
 
   const blogFormRef = useRef();
   const byLikes = (b1, b2) => (b2.likes > b1.likes ? 1 : -1);
@@ -57,21 +64,6 @@ const App = () => {
     setUser(null);
     userService.clearUser();
     notify("good bye!");
-  };
-
-  const createBlog = async (blog) => {
-    blogService
-      .create(blog)
-      .then((createdBlog) => {
-        notify(
-          `a new blog '${createdBlog.title}' by ${createdBlog.author} added`,
-        );
-        setBlogs(blogs.concat(createdBlog));
-        blogFormRef.current.toggleVisibility();
-      })
-      .catch((error) => {
-        notify("creating a blog failed: " + error.response.data.error, "alert");
-      });
   };
 
   const removeBlog = (id) => {
@@ -123,32 +115,34 @@ const App = () => {
     );
   }
 
+  const renderPosts = () => {
+    if (loading) return <p>Loading posts...</p>;
+    if (isError) return <p>Unable to display posts.</p>;
+
+    return posts.map((post) => (
+      <Blog
+        key={post.id}
+        blog={post}
+        likeBlog={likeBlog}
+        removeBlog={removeBlog}
+        user={user}
+      />
+    ));
+  };
+
   return (
     <div>
       <h2>blogs</h2>
-
       <Notification />
-
       <div>
         {user.name} logged in
         <button onClick={logout}>logout</button>
       </div>
-
       <Togglable buttonLabel="new note" ref={blogFormRef}>
-        <NewBlogForm onCreate={createBlog} />
+        <NewBlogForm notify={notify} />
       </Togglable>
 
-      <div id="blogs">
-        {blogs.map((blog) => (
-          <Blog
-            key={blog.id}
-            blog={blog}
-            likeBlog={likeBlog}
-            removeBlog={removeBlog}
-            user={user}
-          />
-        ))}
-      </div>
+      <div>{renderPosts()}</div>
     </div>
   );
 };

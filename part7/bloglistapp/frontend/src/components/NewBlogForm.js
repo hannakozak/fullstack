@@ -1,13 +1,24 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
+import { createPost } from "../features/postsSlice";
+import { useDispatch } from "react-redux";
 
-const NewBlogForm = ({ onCreate }) => {
+const NewBlogForm = ({ notify }) => {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");
+  const dispatch = useDispatch();
+  const blogFormRef = useRef();
+
+  const createBlog = async (newPost) => {
+    await dispatch(createPost(newPost));
+    notify(`a new blog '${newPost.title}' by ${newPost.author} added`);
+
+    blogFormRef.current.toggleVisibility();
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    onCreate({ title, author, url, likes: 0 });
+    createBlog({ title, author, url, likes: 0 });
     setAuthor("");
     setTitle("");
     setUrl("");
