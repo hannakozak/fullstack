@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { createPost } from "../features/postsSlice";
+import { createPost, getPosts } from "../features/postsSlice";
 import { useDispatch } from "react-redux";
 
 const NewBlogForm = ({ notify }) => {
@@ -11,6 +11,8 @@ const NewBlogForm = ({ notify }) => {
 
   const createBlog = async (newPost) => {
     await dispatch(createPost(newPost));
+    await dispatch(getPosts());
+
     notify(`a new blog '${newPost.title}' by ${newPost.author} added`);
 
     blogFormRef.current.toggleVisibility();

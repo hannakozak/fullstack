@@ -31,10 +31,41 @@ export const createPost = createAsyncThunk(
   },
 );
 
+export const deletePost = createAsyncThunk(
+  "posts/deletePost",
+  async (id, { rejectWithValue }) => {
+    try {
+      await blogsService.remove(id);
+      return id;
+    } catch (err) {
+      return rejectWithValue([], err);
+    }
+  },
+);
+
+export const likePost = createAsyncThunk(
+  "posts/likePost",
+  async ({ id, likedPost }, { rejectWithValue }) => {
+    try {
+      return await blogsService.update(id, likedPost);
+    } catch (err) {
+      return rejectWithValue([], err);
+    }
+  },
+);
+
 export const postsSlice = createSlice({
   name: "posts",
   initialState,
-  reducers: {},
+  reducers: {
+    likePost(state, action) {
+      const { id, likes } = action.payload;
+      const existingPost = state.posts.find((post) => post.id === id);
+      if (existingPost) {
+        existingPost.likes = likes + 1;
+      }
+    },
+  },
   extraReducers: {
     [getPosts.pending]: (state) => {
       state.loading = true;
@@ -58,6 +89,30 @@ export const postsSlice = createSlice({
     [createPost.rejected]: (state, { payload, error }) => {
       state.loading = false;
       state.posts = payload;
+      state.error = error;
+    },
+    [deletePost.fulfilled]: (state, { payload }) => {
+      const posts = state.posts.filter((post) => post.id !== payload.id);
+      state.posts = posts;
+      state.loading = false;
+    },
+    [deletePost.pending]: (state) => {
+      state.loading = true;
+    },
+    [deletePost.rejected]: (state, { error }) => {
+      state.loading = false;
+      state.error = error;
+    },
+    [likePost.fulfilled]: (state, { payload }) => {
+      const post = state.posts.find((post) => post.id === payload.id);
+      post.likes = payload.likes;
+      state.loading = false;
+    },
+    [likePost.pending]: (state) => {
+      state.loading = true;
+    },
+    [likePost.rejected]: (state, { error }) => {
+      state.loading = false;
       state.error = error;
     },
   },
