@@ -1,13 +1,10 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 import Blog from "./components/Blog";
 import LoginForm from "./components/LoginForm";
 import NewBlogForm from "./components/NewBlogForm";
 import Notification from "./components/Notification";
 import Togglable from "./components/Togglable";
-
-import loginService from "./services/login";
-import userService from "./services/user";
 
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -21,14 +18,14 @@ import {
   postsSelector,
 } from "./features/postsSlice";
 
+import { logout, userSelector } from "./features/userSlice";
+
 import { v4 as uuidv4 } from "uuid";
 
 const App = () => {
-  //const [blogs, setBlogs] = useState([]);
-  const [user, setUser] = useState(null);
-
   const dispatch = useDispatch();
   const { posts, loading, isError } = useSelector(postsSelector);
+  const { authUser } = useSelector(userSelector);
 
   useEffect(() => {
     dispatch(getPosts());
@@ -40,35 +37,6 @@ const App = () => {
   //useEffect(() => {
   //   blogService.getAll().then((blogs) => setBlogs(blogs.sort(byLikes)));
   // }, []);
-
-  useEffect(() => {
-    const userFromStorage = userService.getUser();
-    if (userFromStorage) {
-      setUser(userFromStorage);
-    }
-  }, []);
-
-  const login = async (username, password) => {
-    loginService
-      .login({
-        username,
-        password,
-      })
-      .then((user) => {
-        setUser(user);
-        userService.setUser(user);
-        notify(`${user.name} logged in!`);
-      })
-      .catch(() => {
-        notify("wrong username/password", "alert");
-      });
-  };
-
-  const logout = () => {
-    setUser(null);
-    userService.clearUser();
-    notify("good bye!");
-  };
 
   const likeBlog = (id) => {
     const postToLike = posts.find((b) => b.id === id);
@@ -101,15 +69,19 @@ const App = () => {
     setTimeout(() => dispatch(removeNotification(id)), 3000);
   };
 
-  if (user === null) {
+  if (!authUser.name) {
     return (
       <>
         <Notification />
-        <LoginForm onLogin={login} />
+        <LoginForm notify={notify} />
       </>
     );
   }
 
+  const logoutHandle = () => {
+    dispatch(logout());
+    notify("good bye!");
+  };
   const renderPosts = () => {
     if (loading) return <p>Loading posts...</p>;
     if (isError) return <p>Unable to display posts.</p>;
@@ -120,7 +92,7 @@ const App = () => {
         post={post}
         likeBlog={likeBlog}
         removePost={removePost}
-        user={user}
+        authUser={authUser}
       />
     ));
   };
@@ -130,8 +102,8 @@ const App = () => {
       <h2>blogs</h2>
       <Notification />
       <div>
-        {user.name} logged in
-        <button onClick={logout}>logout</button>
+        {authUser.name} logged in
+        <button onClick={logoutHandle}>logout</button>
       </div>
       <Togglable buttonLabel="new note" ref={blogFormRef}>
         <NewBlogForm notify={notify} />

@@ -21,7 +21,7 @@ const BlogDetails = ({ post, visible, likeBlog, removePost, own }) => {
   );
 };
 
-const Blog = ({ post, likeBlog, removePost, user }) => {
+const Blog = ({ post, likeBlog, removePost, authUser }) => {
   const [visible, setVisible] = useState(false);
 
   const style = {
@@ -42,7 +42,7 @@ const Blog = ({ post, likeBlog, removePost, user }) => {
         visible={visible}
         likeBlog={likeBlog}
         removePost={removePost}
-        own={post.user && user.username === post.user.username}
+        own={post.user && authUser.username === post.user.username}
       />
     </div>
   );

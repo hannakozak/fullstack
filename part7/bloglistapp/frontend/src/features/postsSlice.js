@@ -57,15 +57,7 @@ export const likePost = createAsyncThunk(
 export const postsSlice = createSlice({
   name: "posts",
   initialState,
-  reducers: {
-    likePost(state, action) {
-      const { id, likes } = action.payload;
-      const existingPost = state.posts.find((post) => post.id === id);
-      if (existingPost) {
-        existingPost.likes = likes + 1;
-      }
-    },
-  },
+  reducers: {},
   extraReducers: {
     [getPosts.pending]: (state) => {
       state.loading = true;

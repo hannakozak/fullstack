@@ -1,12 +1,16 @@
 import { useState } from "react";
+import { login } from "../features/userSlice";
+import { useDispatch } from "react-redux";
 
-const LoginForm = ({ onLogin }) => {
+const LoginForm = ({ notify }) => {
+  const dispatch = useDispatch();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    onLogin(username, password);
+    dispatch(login({ username, password }));
+    notify(`${username} logged in!`);
   };
 
   return (
