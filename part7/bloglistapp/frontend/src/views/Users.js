@@ -11,6 +11,7 @@ import {
 } from "../features/notificationSlice";
 import { v4 as uuidv4 } from "uuid";
 import { Header } from "../components/Header";
+import { Link } from "react-router-dom";
 
 export const Users = () => {
   const dispatch = useDispatch();
@@ -47,7 +48,9 @@ export const Users = () => {
           </tr>
           {users.map((user) => (
             <tr key={user.id}>
-              <User user={user} />
+              <Link to={`/users/${user.id}`}>
+                <User user={user} />
+              </Link>
             </tr>
           ))}
         </tbody>
