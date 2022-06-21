@@ -7,7 +7,7 @@ import {
   removeNotification,
 } from "../features/notificationSlice";
 import { v4 as uuidv4 } from "uuid";
-import { Link } from "react-router-dom";
+import { Navigation } from "./Navigation";
 
 export const Header = () => {
   const dispatch = useDispatch();
@@ -26,16 +26,13 @@ export const Header = () => {
 
   return (
     <>
-      <h2>blogs</h2>
       <Notification />
+      <Navigation />
       <div>
         {authUser.name} logged in
         <button onClick={logoutHandler}>logout</button>
       </div>
-      <nav>
-        <Link to="/">home</Link>
-        <Link to="/users">users</Link>
-      </nav>
+      <h2>blogs</h2>
     </>
   );
 };
