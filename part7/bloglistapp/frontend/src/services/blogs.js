@@ -1,12 +1,12 @@
 import axios from "axios";
-import userService from "./user";
 
 const baseUrl = "/api/blogs";
 
 const config = () => {
+  let token = JSON.parse(localStorage.getItem("token"));
   return {
     headers: {
-      Authorization: `bearer ${userService.getToken()}`,
+      Authorization: `bearer ${token}`,
     },
   };
 };

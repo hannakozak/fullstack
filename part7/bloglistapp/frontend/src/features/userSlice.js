@@ -12,7 +12,6 @@ export const login = createAsyncThunk(
   async ({ username, password }, { rejectWithValue }) => {
     try {
       const data = await loginService.login({ username, password });
-      console.log(data);
       return data;
     } catch (err) {
       return rejectWithValue([], err);
@@ -25,11 +24,13 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     logout(state) {
+      localStorage.removeItem("token");
       state.authUser = [];
     },
   },
   extraReducers: {
     [login.fulfilled]: (state, { payload }) => {
+      localStorage.setItem("token", JSON.stringify(payload.token));
       state.authUser = payload;
       state.loading = false;
     },

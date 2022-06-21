@@ -24,6 +24,7 @@ export const createPost = createAsyncThunk(
   async (newPost, { rejectWithValue }) => {
     try {
       const data = await blogsService.create(newPost);
+      console.log(data);
       return data;
     } catch (err) {
       return rejectWithValue([], err);
