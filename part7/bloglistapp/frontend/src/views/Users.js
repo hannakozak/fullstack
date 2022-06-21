@@ -40,21 +40,21 @@ export const Users = () => {
     <>
       <Header />
       <h1>Users</h1>
-      <table>
-        <tbody>
-          <tr>
-            <td></td>
-            <td>blogs created</td>
-          </tr>
+      <div>
+        <div>
+          <div>
+            <div></div>
+            <div>blogs created</div>
+          </div>
           {users.map((user) => (
-            <tr key={user.id}>
+            <div key={user.id}>
               <Link to={`/users/${user.id}`}>
                 <User user={user} />
               </Link>
-            </tr>
+            </div>
           ))}
-        </tbody>
-      </table>
+        </div>
+      </div>
     </>
   );
 };

@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { userSelector } from "./features/userSlice";
 import LoginForm from "./components/LoginForm";
 import { UserView } from "./views/UserView";
+import { BlogView } from "./views/BlogView";
 
 export const App = () => {
   const { authUser } = useSelector(userSelector);
@@ -18,6 +19,7 @@ const AuthApp = () => {
       <Route path="/" element={<Home />} />
       <Route path="/users" element={<Users />} />
       <Route path="/users/:id" element={<UserView />} />
+      <Route path="/posts/:id" element={<BlogView />} />
     </Routes>
   );
 };
