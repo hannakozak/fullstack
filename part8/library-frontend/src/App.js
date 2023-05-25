@@ -8,7 +8,7 @@ import { useQuery } from '@apollo/client'
 const App = () => {
   const [page, setPage] = useState('authors')
   const authors = useQuery(ALL_AUTHORS)
-  const books = useQuery(ALL_BOOKS, {pollInterval: 2000})
+  const books = useQuery(ALL_BOOKS)
 
   if (authors.loading) {
     return <div>loading...</div>
