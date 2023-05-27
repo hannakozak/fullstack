@@ -85,7 +85,7 @@ let books = [
     genres: ["classic", "crime"],
   },
   {
-    title: "The Demon ",
+    title: "The Demon",
     published: 1872,
     author: "Fyodor Dostoevsky",
     id: "afa5de04-344d-11e9-a414-719c6709cf3e",
@@ -166,12 +166,12 @@ const resolvers = {
       return book
     },
     editAuthor: (root, args) => {
-      const author = authors.find(author => author.name === args.author);
-      if (!author) {
+      const authorToUpdate = authors.find(author => author.name === args.name);
+      if (!authorToUpdate) {
         return null
       }
-      const updatedAuthor = {...author, born: args.setBornTo}
-      authors.map(author => author.name === args.name ? updatedAuthor : author)
+      const updatedAuthor = {...authorToUpdate, born: args.setBornTo}
+      authors = authors.map(author => author.name === args.name ? updatedAuthor : author)
       return updatedAuthor
 
     }
