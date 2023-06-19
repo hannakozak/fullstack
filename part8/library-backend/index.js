@@ -3,7 +3,8 @@ const { ApolloServer, gql } = require("apollo-server");
 const mongoose = require('mongoose')
 mongoose.set('strictQuery', false)
 const Book = require('./models/book')
-const Author = require('./models/author')
+const Author = require('./models/author');
+const { GraphQLError } = require('graphql');
 
 require('dotenv').config()
 
@@ -190,19 +191,51 @@ const resolvers = {
 
       if (!author) {
         author = new Author({ name: args.author})
-        await author.save();
+        try {
+          await author.save();
+        } catch (error) {
+          throw new GraphQLError('Adding book failed', {
+            extensions: {
+              code: 'BAD_USER_INPUT',
+              invalidArgs: args.autor,
+              error
+            }
+          })
+        } 
       }
 
       const book = new Book({ ...args, author })
-      const bookAdded = await book.save()
-      return bookAdded
+      try {
+        const bookAdded = await book.save()
+        return bookAdded
+      } catch (error) {
+        throw new GraphQLError('Adding book failed', {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+            invalidArgs: args,
+            error
+          }
+        })
+      }
+      
     },
     editAuthor: async (root, args) => {
       let person = await Author.findOneAndUpdate({name: args.name}, {born: args.setBornTo}, {
         new: true
       });
-      person = await Author.findOne({name: args.name});
+      try {
+        person = await Author.findOne({name: args.name});
       return person;
+      } catch (error) {
+        throw new GraphQLError('Edit Author failed', {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+            invalidArgs: args,
+            error
+          }
+        })
+      }
+      
     }
   }
 };
