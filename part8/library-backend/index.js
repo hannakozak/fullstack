@@ -1,5 +1,5 @@
 const { uuid } = require('uuidv4');
-const { ApolloServer, gql } = require("apollo-server");
+const { ApolloServer, gql, AuthenticationError, UserInputError } = require("apollo-server");
 const mongoose = require('mongoose')
 mongoose.set('strictQuery', false)
 const Book = require('./models/book')
@@ -201,6 +201,9 @@ const resolvers = {
     },
   
     allAuthors: async () => Author.find({}),
+    me: (root, args, context) => {
+      return context.currentUser
+    }
   },
   Author: {
     bookCount: async (root) => {
@@ -215,57 +218,54 @@ const resolvers = {
         throw new AuthenticationError("not authenticated");
       }
 
-      let author = await Author.findOne({ name: args.author })
+      let author = await Author.findOne({ name: args.author });
 
       if (!author) {
-        author = new Author({ name: args.author})
+        author = new Author({ name: args.author });
+
         try {
           await author.save();
         } catch (error) {
-          throw new GraphQLError('Adding book failed', {
-            extensions: {
-              code: 'BAD_USER_INPUT',
-              invalidArgs: args.autor,
-              error
-            }
-          })
-        } 
+          throw new UserInputError(error.message, { invalidArgs: args });
+        }
       }
 
-      const book = new Book({ ...args, author })
+      const book = new Book({ ...args, author });
+
       try {
-        const bookAdded = await book.save()
-        return bookAdded
+        await book.save();
       } catch (error) {
-        throw new GraphQLError('Adding book failed', {
-          extensions: {
-            code: 'BAD_USER_INPUT',
-            invalidArgs: args,
-            error
-          }
-        })
+        throw new UserInputError(error.message, { invalidArgs: args });
       }
-      
+
+     
+
+      return book;
     },
     editAuthor: async (root, args, context) => {
+      const existingAuthor = await Author.findOne({name: args.name});
       if (!context.currentUser) {
         throw new AuthenticationError("not authenticated");
       }
-      let person = await Author.findOneAndUpdate({name: args.name}, {born: args.setBornTo}, {
-        new: true
-      });
-      try {
-        person = await Author.findOne({name: args.name});
-      return person;
-      } catch (error) {
-        throw new GraphQLError('Edit Author failed', {
-          extensions: {
-            code: 'BAD_USER_INPUT',
-            invalidArgs: args,
-            error
-          }
-        })
+     
+      if (!existingAuthor){
+        return null
       }
+
+        try {
+          existingAuthor.born = args.setBornTo
+          await existingAuthor.save();
+          return existingAuthor;
+        }  catch (error) {
+          throw new GraphQLError('Edit Author failed', {
+            extensions: {
+              code: 'BAD_USER_INPUT',
+              invalidArgs: args,
+              error
+            }
+          })
+        }
+      
     },
     createUser: async (root, args) => {
       const user = new User({ ...args })
@@ -307,12 +307,12 @@ const server = new ApolloServer({
   resolvers,
   context: async ({ req, res }) => {
     const auth = req ? req.headers.authorization : null
-    if (auth && auth.startsWith('Bearer ')) {
+    if (auth && auth.startsWith('bearer ')) {
       const decodedToken = jwt.verify(
         auth.substring(7), process.env.JWT_SECRET
       )
       const currentUser = await User
-        .findById(decodedToken.id).populate('friends')
+        .findById(decodedToken.id)
       return { currentUser }
     }
   },
