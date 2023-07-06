@@ -1,32 +1,65 @@
-const Books = (props) => {
-  if (!props.show) {
-    return null
-  }
+import { useEffect, useState } from 'react';
+import { ALL_BOOKS, ALL_BOOKS_BY_GENRE } from '../queries/queries';
+import { useQuery } from '@apollo/client';
 
-  const books = props.allBooks
+const Books = ({ show }) => {
+	const [genre, setGenre] = useState('');
+	const [books, setBooks] = useState();
 
-  return (
-    <div>
-      <h2>books</h2>
+	const allBooks = useQuery(ALL_BOOKS);
+	const showAllBooks = allBooks.data.allBooks;
+	const showBooksByGenre = useQuery(ALL_BOOKS_BY_GENRE, {
+		variables: { genre },
+	});
 
-      <table>
-        <tbody>
-          <tr>
-            <th>name</th>
-            <th>author</th>
-            <th>published</th>
-          </tr>
-          {books.map((a) => (
-            <tr key={a.title}>
-              <td>{a.title}</td>
-              <td>{a.author.name}</td>
-              <td>{a.published}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  )
-}
+	const genresArray = showAllBooks.map((book) => book.genres);
+	const uniqGenres = [...new Set(genresArray.flat())];
 
-export default Books
+	useEffect(() => {
+		if (showBooksByGenre.data) setBooks(showBooksByGenre.data.allBooks);
+	}, [genre, showBooksByGenre.data]);
+
+	const showBooks = async (genre) => {
+		setGenre(genre);
+	};
+
+	if (!show) {
+		return null;
+	}
+
+	return (
+		<div>
+			<h2>books</h2>
+
+			<table>
+				<tbody>
+					<tr>
+						<th>name</th>
+						<th>author</th>
+						<th>published</th>
+					</tr>
+					{books.map((a) => (
+						<tr key={a.title}>
+							<td>{a.title}</td>
+							<td>{a.author.name}</td>
+							<td>{a.published}</td>
+							{a.genres.map((genre) => (
+								<td>{genre}</td>
+							))}
+						</tr>
+					))}
+				</tbody>
+			</table>
+			<div>
+				<button onClick={() => setGenre('')}>all</button>
+				{uniqGenres.map((genre) => (
+					<button key={genre} value={genre} onClick={() => showBooks(genre)}>
+						{genre}
+					</button>
+				))}
+			</div>
+		</div>
+	);
+};
+
+export default Books;
