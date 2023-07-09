@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ALL_BOOKS, ALL_BOOKS_BY_GENRE } from '../queries/queries';
 import { useQuery } from '@apollo/client';
+import { v4 as uuidv4 } from 'uuid';
 
 const Books = ({ show }) => {
 	const [genre, setGenre] = useState('');
@@ -39,12 +40,12 @@ const Books = ({ show }) => {
 						<th>published</th>
 					</tr>
 					{books.map((a) => (
-						<tr key={a.title}>
+						<tr key={uuidv4()}>
 							<td>{a.title}</td>
 							<td>{a.author.name}</td>
 							<td>{a.published}</td>
 							{a.genres.map((genre) => (
-								<td>{genre}</td>
+								<td key={uuidv4()}>{genre}</td>
 							))}
 						</tr>
 					))}
