@@ -1,26 +1,24 @@
-const mongoose = require('mongoose')
+import { Schema, model } from 'mongoose';
 
-const uniqueValidator = require('mongoose-unique-validator')
+import uniqueValidator from 'mongoose-unique-validator';
 
-const schema = new mongoose.Schema({
-  title: {
-    type: String,
-    required: true,
-    unique: true,
-    minlength: 5
-  },
-  published: {
-    type: Number,
-  },
-  author: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Author'
-  },
-  genres: [
-    { type: String}
-  ]
-})
+const schema = new Schema({
+	title: {
+		type: String,
+		required: true,
+		unique: true,
+		minlength: 5,
+	},
+	published: {
+		type: Number,
+	},
+	author: {
+		type: Schema.Types.ObjectId,
+		ref: 'Author',
+	},
+	genres: [{ type: String }],
+});
 
-schema.plugin(uniqueValidator)
+schema.plugin(uniqueValidator);
 
-module.exports = mongoose.model('Book', schema)
+export const Book = model('Book', schema);
