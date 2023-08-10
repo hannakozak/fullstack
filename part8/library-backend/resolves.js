@@ -3,6 +3,8 @@ import jwt from 'jsonwebtoken';
 import { User } from './models/user.js';
 import { Book } from './models/book.js';
 import { Author } from './models/author.js';
+import { PubSub } from 'graphql-subscriptions';
+const pubsub = new PubSub();
 
 export const resolvers = {
 	Query: {
@@ -71,6 +73,7 @@ export const resolvers = {
 			} catch (error) {
 				throw new UserInputError(error.message, { invalidArgs: args });
 			}
+			pubsub.publish('BOOK_ADDED', { bookAdded: book });
 			return book;
 		},
 		editAuthor: async (root, args, context) => {
@@ -127,6 +130,11 @@ export const resolvers = {
 			};
 
 			return { value: jwt.sign(userForToken, process.env.JWT_SECRET) };
+		},
+	},
+	Subscription: {
+		bookAdded: {
+			subscribe: () => pubsub.asyncIterator('BOOK_ADDED'),
 		},
 	},
 };
